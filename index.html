@@ -73,13 +73,24 @@
       color: var(--text);
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
+    .question-box {
+      margin-top: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 15px 20px;
+      max-width: 400px;
+      text-align: center;
+      font-size: 1rem;
+      color: var(--text);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
   <h1>🧠 Quebra-Gelo da Memória</h1>
   <div class="game-board" id="board"></div>
   <div class="question-box" id="question">Encontre um par para desbloquear uma pergunta!</div>
-  <p><a href="https://pedrocorreialopes.github.io/jogomemoria/">Novo Jogo</a></p>
+  <div class="new-game" id="newgame"><p><a href="https://pedrocorreialopes.github.io/jogomemoria/">Novo Jogo</a></p></div>
 
   <script>
     const emojis = ['😀', '😴', '☕', '🧠', '🐢', '🚀'];
