@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jogo da Memória - Quebra-Gelo</title>
+  <style>
+    :root {
+      --bg-color: linear-gradient(135deg, #74ebd5, #acb6e5);
+      --card-back: #ffffff;
+      --card-front: #f7f9fb;
+      --accent: #6c5ce7;
+      --text: #2d3436;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      gap: 15px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      backdrop-filter: blur(8px);
+    }
+
+    .card {
+      width: 100px;
+      height: 100px;
+      background: var(--card-back);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .card.flipped {
+      background: var(--card-front);
+      font-size: 2.5rem;
+    }
+
+    .question-box {
+      margin-top: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 15px 20px;
+      max-width: 400px;
+      text-align: center;
+      font-size: 1rem;
+      color: var(--text);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Quebra-Gelo da Memória</h1>
+  <div class="game-board" id="board"></div>
+  <div class="question-box" id="question">Encontre um par para desbloquear uma pergunta!</div>
+
+  <script>
+    const emojis = ['😀', '😴', '☕', '🧠', '🐢', '🚀'];
+    const questions = {
+      '😀': 'Qual emoji melhor descreve sua manhã hoje?',
+      '😴': 'Qual é o seu ritual matinal quando está com sono?',
+      '☕': 'Se fosse uma bebida, qual representaria seu humor de trabalho?',
+      '🧠': 'Qual é uma habilidade de trabalho que você se orgulha de ter desenvolvido?',
+      '🐢': 'Qual projeto te ensinou mais sobre paciência?',
+      '🚀': 'Qual é uma meta profissional que te empolga no momento?'
+    };
+
+    const board = document.getElementById('board');
+    const questionBox = document.getElementById('question');
+    let cardValues = [...emojis, ...emojis].sort(() => 0.5 - Math.random());
+    let flippedCards = [];
+    let matched = [];
+
+    function createCard(emoji, index) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.emoji = emoji;
+      card.dataset.index = index;
+      card.innerHTML = '';
+      card.addEventListener('click', handleCardClick);
+      return card;
+    }
+
+    function handleCardClick(e) {
+      const card = e.currentTarget;
+      const emoji = card.dataset.emoji;
+      const index = card.dataset.index;
+
+      if (flippedCards.length >= 2 || card.classList.contains('flipped') || matched.includes(index)) return;
+
+      card.classList.add('flipped');
+      card.innerHTML = emoji;
+      flippedCards.push({ card, emoji, index });
+
+      if (flippedCards.length === 2) {
+        const [first, second] = flippedCards;
+        if (first.emoji === second.emoji) {
+          matched.push(first.index, second.index);
+          questionBox.innerText = questions[emoji];
+          flippedCards = [];
+        } else {
+          setTimeout(() => {
+            first.card.classList.remove('flipped');
+            second.card.classList.remove('flipped');
+            first.card.innerHTML = '';
+            second.card.innerHTML = '';
+            flippedCards = [];
+          }, 800);
+        }
+      }
+    }
+
+    function initGame() {
+      cardValues.forEach((emoji, index) => {
+        const card = createCard(emoji, index);
+        board.appendChild(card);
+      });
+    }
+
+    initGame();
+  </script>
+</body>
+</html>
